@@ -1,0 +1,36 @@
+const { expect } = require('chai');
+const io = require('socket.io-client');
+
+describe('Real-Time Click Counter', function() {
+    let socket;
+
+    beforeEach(function(done) {
+        // Setup
+        socket = io.connect('http://localhost:3000', {
+            'reconnection delay': 0,
+            'reopen delay': 0,
+            'force new connection': true,
+            'transports': ['websocket'],
+        });
+        socket.on('connect', () => {
+            done();
+        });
+    });
+
+    afterEach(function(done) {
+        // Cleanup
+        if (socket.connected) {
+            socket.disconnect();
+        }
+        done();
+    });
+
+    it('should increment the click count', function(done) {
+        socket.emit('buttonClicked');
+        socket.on('updateCount', (count) => {
+            expect(count).to.be.a('number');
+            expect(count).to.equal(1);
+            done();
+        });
+    });
+});
