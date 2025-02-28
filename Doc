@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Click Counter</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Real-Time Click Counter</h1>
+    <p>Click the button to increase the count:</p>
+    <button id="clickButton">Click me!</button>
+    <p>Click count: <span id="clickCount">0</span></p>
+
+    <script>
+        const socket = io();
+
+        const clickButton = document.getElementById('clickButton');
+        const clickCount = document.getElementById('clickCount');
+
+        clickButton.addEventListener('click', () => {
+            socket.emit('buttonClicked');
+        });
+
+        socket.on('updateCount', (count) => {
+            clickCount.textContent = count;
+        });
+    </script>
+</body>
+</html>
